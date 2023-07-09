@@ -54,6 +54,6 @@ PYBIND11_MODULE(intimg, m) {
 
     m.def("intimg", fx_cpu, "Compute integral image");
     m.def("intimg_parallel", fx_omp, "Compute integral image using multiple threads");
-    m.def("intimg_cuda1", fx_omp, "Compute integral image using CUDA");
-    m.def("intimg_cuda2", fx_omp, "Compute integral image using fast CUDA");
+    m.def("intimg_cuda1", fx_gpu1, "Compute integral image using CUDA");
+    m.def("intimg_cuda2", fx_gpu2, "Compute integral image using fast CUDA");
 }
