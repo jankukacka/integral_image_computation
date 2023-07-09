@@ -11,7 +11,7 @@ An algorithm to compute the integral image on a single CPU thread can be written
 > &emsp;&emsp;**for** j in [0..width-1]   
 > &emsp;&emsp;&emsp;integral_image[i][j] = image[i][j]   
 > &emsp;&emsp;&emsp;**if** j > 0: integral_image[i][j] += integral_image[i][j-1]
-> 
+>
 > &emsp;**for** i in [1..height-1]   
 > &emsp;&emsp;**for** j in [0..width-1]   
 > &emsp;&emsp;&emsp;integral_image[i][j] += integral_image[i-1][j]   
@@ -83,8 +83,14 @@ Execution times for other image sizes are plotted below:
 
 As expected, parallel implementation leads to substantial speedups, GPU variants in particular. However, copying data between the GPU and main RAM takes more time than the computation itself (approx. as much time as 8-threaded CPU computation). This may be discounted by using the data in GPU memory for further computations.
 
+To run the benchmark, use `make run`.
+
 ## Volumetric computation
 The algorithm can be directly extended to three-dimensional volumes by addition of a third loop performing cumulative sum over the third dimension to obtain a integral volume $V_\Sigma$. The summation of a box given by corner coordinates $(x,y,z) = (1,1,1)$ and $(2,2,2)$ is performed using the formula:
 $$V_\Sigma(2,2,2)-V_\Sigma(1,2,2)-V_\Sigma(2,1,2)-V_\Sigma(2,2,1)+V_\Sigma(1,1,2)+V_\Sigma(1,2,1)+V_\Sigma(2,1,1)-V_\Sigma(1,1,1).$$
 Attention should be paid to the numerical precision of value representation. For integral data types, an overflow is possible. For floating point numbers, errors occur when adding/subtracting values with varying exponent value. The severity of the error grows with the exponent difference up to $2^{24}$ when the smaller operand is completely lost:
 $$2^{25}+2^1 \stackrel{\mathrm{FP32}}{=} 2^{25}$$
+
+
+## Python bindings
+Python bindings are realized with PyBind11 using a definition in file `bindings.cu`. Using `pybind11::array_t<T>`, we can access the buffer interface and operate directly on the numpy array memory buffer, avoiding copying the data between python and C++ representations. Bindings are compiled with the command `make bindings` and their function can be verified against a python implementation using `python test_bindings.py`.

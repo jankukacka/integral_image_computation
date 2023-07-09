@@ -43,6 +43,9 @@ bin/cuda2.o: src/intimg2.cu src/intimg2.cuh bin/utils.o
 	mkdir -p bin
 	nvcc -c src/intimg2.cu -o bin/cuda2.o
 
+bindings: bin/intimg.o bin/omp.o
+	nvcc -shared -lgomp --compiler-options -fPIC `python3 -m pybind11 --includes` src/bindings.cu bin/intimg.o bin/omp.o src/intimg.cu src/utils.cpp src/intimg2.cu -o bin/intimg`python3-config --extension-suffix`
+
 all: bin/benchmark
 
 clean:

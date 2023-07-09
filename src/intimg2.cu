@@ -1,6 +1,7 @@
 #include "intimg2.cuh"
-using namespace cub;
 #include <stdexcept>
+
+using namespace cub;
 
 // BlockScan code from:
 // https://nvlabs.github.io/cub/example_block_scan_8cu-example.html
